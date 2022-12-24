@@ -1,0 +1,3 @@
+-usar fs promise
+-github ramas: una rama por endpoint feature_create, feature_read, feature_update, feature_delete
+-validaciones
