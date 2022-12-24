@@ -9,30 +9,38 @@ app.use(express.json());
 
 // METODO POST - CREATE
 app.post("/canciones", async (req, res) => {
-  const songs = JSON.parse(await fs.promises.readFile("canciones.json"));
-  const song = req.body;
-  if (!song.id || !song.name || !song.artist || !song.tone) {
-    res.send(
-      "Falta un dato, por favor agregar una canción con los siguientes parametros: id, name, artist y tone"
-    );
-  } else {
-    if (!songs[songs.findIndex((p) => p.id == song.id)]) {
-      songs.push(song);
-      await fs.promises.writeFile("canciones.json", JSON.stringify(songs));
-      res.send("Cancion agregada con exito!");
+  try {
+    const songs = JSON.parse(await fs.promises.readFile("canciones.json"));
+    const song = req.body;
+    if (!song.id || !song.name || !song.artist || !song.tone) {
+      res.send(
+        "Falta un dato, por favor agregar una canción con los siguientes parametros: id, name, artist y tone"
+      );
     } else {
-      res.send("Cancion ya existe, prueba con otro id");
+      if (!songs[songs.findIndex((p) => p.id == song.id)]) {
+        songs.push(song);
+        await fs.promises.writeFile("canciones.json", JSON.stringify(songs));
+        res.send("Cancion agregada con exito!");
+      } else {
+        res.send("Cancion ya existe, prueba con otro id");
+      }
     }
+  } catch (e) {
+    console.error(e);
   }
 });
 
 // METODO GET - READ
 app.get("/canciones", async (req, res) => {
-  const songs = JSON.parse(await fs.promises.readFile("canciones.json"));
-  if (songs.length != 0) {
-    res.json(songs);
-  } else {
-    res.send("No hay canciones!");
+  try {
+    const songs = JSON.parse(await fs.promises.readFile("canciones.json"));
+    if (songs.length != 0) {
+      res.json(songs);
+    } else {
+      res.send("No hay canciones!");
+    }
+  } catch (e) {
+    console.error(e);
   }
 });
 
@@ -84,7 +92,7 @@ app.delete("/canciones/:id", async (req, res) => {
         await fs.promises.writeFile("canciones.json", JSON.stringify(songs));
         res.send(`Cancion eliminada con id: ${id}`);
       } else {
-        res.send(`No existe la cancion con id ${id}`)
+        res.send(`No existe la cancion con id ${id}`);
       }
     } else {
       res.send("No hay canciones para eliminar.");
