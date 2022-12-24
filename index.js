@@ -23,3 +23,13 @@ app.post("/canciones", async (req, res) => {
         }
     }
 })
+
+// METODO GET - READ
+app.get("/canciones", async(req, res) => {
+    const songs = JSON.parse(await fs.promises.readFile("canciones.json"))
+    if(songs.length != 0){
+        res.json(songs)
+    } else {
+        res.send("No hay canciones!")
+    }
+})
